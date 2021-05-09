@@ -55,13 +55,12 @@ namespace MyHealth.API.Nutrition.UnitTests.FunctionTests
             var nutritionEnvelope = new mdl.NutritionEnvelope();
             byte[] byteArray = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(nutritionEnvelope));
             MemoryStream memoryStream = new MemoryStream(byteArray);
-            _mockHttpRequest.Setup(r => r.Query["date"]).Returns(invalidDateInput);
             _mockHttpRequest.Setup(r => r.Body).Returns(memoryStream);
 
             _mockDateValidator.Setup(x => x.IsNutritionDateValid(invalidDateInput)).Returns(false);
 
             // Act
-            var response = await _func.Run(_mockHttpRequest.Object, _mockLogger.Object);
+            var response = await _func.Run(_mockHttpRequest.Object, _mockLogger.Object, invalidDateInput);
 
             // Assert
             Assert.Equal(typeof(BadRequestResult), response.GetType());
@@ -77,14 +76,13 @@ namespace MyHealth.API.Nutrition.UnitTests.FunctionTests
             var nutritionEnvelope = new mdl.NutritionEnvelope();
             byte[] byteArray = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(nutritionEnvelope));
             MemoryStream memoryStream = new MemoryStream(byteArray);
-            _mockHttpRequest.Setup(r => r.Query["date"]).Returns("2019-12-31");
             _mockHttpRequest.Setup(r => r.Body).Returns(memoryStream);
 
             _mockDateValidator.Setup(x => x.IsNutritionDateValid(It.IsAny<string>())).Returns(true);
             _mockActivityDbService.Setup(x => x.GetNutritionLogByDate(It.IsAny<string>())).Returns(Task.FromResult<mdl.NutritionEnvelope>(null));
 
             // Act
-            var response = await _func.Run(_mockHttpRequest.Object, _mockLogger.Object);
+            var response = await _func.Run(_mockHttpRequest.Object, _mockLogger.Object, "2019-12-31");
 
             // Assert
             Assert.Equal(typeof(NotFoundResult), response.GetType());
@@ -109,14 +107,13 @@ namespace MyHealth.API.Nutrition.UnitTests.FunctionTests
             var nutritionDate = nutritionEnvelope.Nutrition.NutritionDate;
             byte[] byteArray = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(nutritionEnvelope));
             MemoryStream memoryStream = new MemoryStream(byteArray);
-            _mockHttpRequest.Setup(r => r.Query["date"]).Returns(nutritionDate);
             _mockHttpRequest.Setup(r => r.Body).Returns(memoryStream);
 
             _mockDateValidator.Setup(x => x.IsNutritionDateValid(nutritionDate)).Returns(true);
             _mockActivityDbService.Setup(x => x.GetNutritionLogByDate(nutritionDate)).ReturnsAsync(nutritionEnvelope);
 
             // Act
-            var response = await _func.Run(_mockHttpRequest.Object, _mockLogger.Object);
+            var response = await _func.Run(_mockHttpRequest.Object, _mockLogger.Object, nutritionDate);
 
             // Assert
             Assert.Equal(typeof(OkObjectResult), response.GetType());
@@ -130,14 +127,13 @@ namespace MyHealth.API.Nutrition.UnitTests.FunctionTests
             var activityEnvelope = new mdl.ActivityEnvelope();
             byte[] byteArray = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(activityEnvelope));
             MemoryStream memoryStream = new MemoryStream(byteArray);
-            _mockHttpRequest.Setup(r => r.Query["date"]).Returns("2019-12-31");
             _mockHttpRequest.Setup(r => r.Body).Returns(memoryStream);
 
             _mockDateValidator.Setup(x => x.IsNutritionDateValid(It.IsAny<string>())).Returns(true);
             _mockActivityDbService.Setup(x => x.GetNutritionLogByDate(It.IsAny<string>())).ThrowsAsync(new Exception());
 
             // Act
-            var response = await _func.Run(_mockHttpRequest.Object, _mockLogger.Object);
+            var response = await _func.Run(_mockHttpRequest.Object, _mockLogger.Object, "2019-12-31");
 
             // Assert
             Assert.Equal(typeof(StatusCodeResult), response.GetType());

@@ -33,15 +33,14 @@ namespace MyHealth.API.Nutrition.Functions
 
         [FunctionName(nameof(GetNutritionLogByDate))]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "NutritionLog")] HttpRequest req,
-            ILogger log)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Nutrition/{nutritionDate}")] HttpRequest req,
+            ILogger log,
+            string nutritionDate)
         {
             IActionResult result;
 
             try
             {
-                string nutritionDate = req.Query["date"];
-
                 bool isDateValid = _dateValidator.IsNutritionDateValid(nutritionDate);
                 if (isDateValid == false)
                 {

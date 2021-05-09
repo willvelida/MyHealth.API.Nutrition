@@ -31,7 +31,7 @@ namespace MyHealth.API.Nutrition.Functions
 
         [FunctionName(nameof(GetAllNutritionLogs))]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "NutritionLogs")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "Nutrition")] HttpRequest req,
             ILogger log)
         {
             IActionResult result;
