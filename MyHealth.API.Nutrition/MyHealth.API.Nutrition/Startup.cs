@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MyHealth.API.Nutrition;
 using MyHealth.API.Nutrition.Services;
+using MyHealth.API.Nutrition.Validators;
 using MyHealth.Common;
 using System.IO;
 
@@ -35,6 +36,7 @@ namespace MyHealth.API.Nutrition
             });
 
             builder.Services.AddScoped<INutritionDbService, NutritionDbService>();
+            builder.Services.AddScoped<IDateValidator, DateValidator>();
         }
     }
 }

@@ -3,9 +3,9 @@ using System.Globalization;
 
 namespace MyHealth.API.Nutrition.Validators
 {
-    public static class DateValidator
+    public class DateValidator : IDateValidator
     {
-        public static bool IsNutritionDateValid(string nutritionLogDate)
+        public bool IsNutritionDateValid(string nutritionLogDate)
         {
             bool isDateValid = false;
             string pattern = "yyyy-MM-dd";

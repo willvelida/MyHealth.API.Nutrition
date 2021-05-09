@@ -17,15 +17,18 @@ namespace MyHealth.API.Nutrition.Functions
         private readonly INutritionDbService _nutritionDbService;
         private readonly IServiceBusHelpers _serviceBusHelpers;
         private readonly IConfiguration _configuration;
+        private readonly IDateValidator _dateValidator;
 
         public GetNutritionLogByDate(
             INutritionDbService nutritionDbService,
             IServiceBusHelpers serviceBusHelpers,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IDateValidator dateValidator)
         {
             _nutritionDbService = nutritionDbService;
             _serviceBusHelpers = serviceBusHelpers;
             _configuration = configuration;
+            _dateValidator = dateValidator;
         }
 
         [FunctionName(nameof(GetNutritionLogByDate))]
@@ -39,7 +42,7 @@ namespace MyHealth.API.Nutrition.Functions
             {
                 string nutritionDate = req.Query["date"];
 
-                bool isDateValid = DateValidator.IsNutritionDateValid(nutritionDate);
+                bool isDateValid = _dateValidator.IsNutritionDateValid(nutritionDate);
                 if (isDateValid == false)
                 {
                     result = new BadRequestResult();
