@@ -20,7 +20,7 @@ namespace MyHealth.API.Nutrition.UnitTests.FunctionTests
 {
     public class GetNutritionLogByDateShould
     {
-        private Mock<INutritionDbService> _mockActivityDbService;
+        private Mock<INutritionDbService> _mockNutritionDbService;
         private Mock<IDateValidator> _mockDateValidator;
         private Mock<IServiceBusHelpers> _mockServiceBusHelpers;
         private Mock<IConfiguration> _mockConfiguration;
@@ -31,7 +31,7 @@ namespace MyHealth.API.Nutrition.UnitTests.FunctionTests
 
         public GetNutritionLogByDateShould()
         {
-            _mockActivityDbService = new Mock<INutritionDbService>();
+            _mockNutritionDbService = new Mock<INutritionDbService>();
             _mockDateValidator = new Mock<IDateValidator>();
             _mockServiceBusHelpers = new Mock<IServiceBusHelpers>();
             _mockConfiguration = new Mock<IConfiguration>();
@@ -39,7 +39,7 @@ namespace MyHealth.API.Nutrition.UnitTests.FunctionTests
             _mockLogger = new Mock<ILogger>();            
 
             _func = new GetNutritionLogByDate(
-                _mockActivityDbService.Object,
+                _mockNutritionDbService.Object,
                 _mockServiceBusHelpers.Object,
                 _mockConfiguration.Object,
                 _mockDateValidator.Object);
@@ -79,7 +79,7 @@ namespace MyHealth.API.Nutrition.UnitTests.FunctionTests
             _mockHttpRequest.Setup(r => r.Body).Returns(memoryStream);
 
             _mockDateValidator.Setup(x => x.IsNutritionDateValid(It.IsAny<string>())).Returns(true);
-            _mockActivityDbService.Setup(x => x.GetNutritionLogByDate(It.IsAny<string>())).Returns(Task.FromResult<mdl.NutritionEnvelope>(null));
+            _mockNutritionDbService.Setup(x => x.GetNutritionLogByDate(It.IsAny<string>())).Returns(Task.FromResult<mdl.NutritionEnvelope>(null));
 
             // Act
             var response = await _func.Run(_mockHttpRequest.Object, _mockLogger.Object, "2019-12-31");
@@ -110,7 +110,7 @@ namespace MyHealth.API.Nutrition.UnitTests.FunctionTests
             _mockHttpRequest.Setup(r => r.Body).Returns(memoryStream);
 
             _mockDateValidator.Setup(x => x.IsNutritionDateValid(nutritionDate)).Returns(true);
-            _mockActivityDbService.Setup(x => x.GetNutritionLogByDate(nutritionDate)).ReturnsAsync(nutritionEnvelope);
+            _mockNutritionDbService.Setup(x => x.GetNutritionLogByDate(nutritionDate)).ReturnsAsync(nutritionEnvelope);
 
             // Act
             var response = await _func.Run(_mockHttpRequest.Object, _mockLogger.Object, nutritionDate);
@@ -119,6 +119,7 @@ namespace MyHealth.API.Nutrition.UnitTests.FunctionTests
             Assert.Equal(typeof(OkObjectResult), response.GetType());
             _mockServiceBusHelpers.Verify(x => x.SendMessageToQueue(It.IsAny<string>(), It.IsAny<Exception>()), Times.Never);
         }
+
 
         [Fact]
         public async Task Throw500InternalServerErrorStatusCodeWhenActivityDbServiceThrowsException()
@@ -130,7 +131,7 @@ namespace MyHealth.API.Nutrition.UnitTests.FunctionTests
             _mockHttpRequest.Setup(r => r.Body).Returns(memoryStream);
 
             _mockDateValidator.Setup(x => x.IsNutritionDateValid(It.IsAny<string>())).Returns(true);
-            _mockActivityDbService.Setup(x => x.GetNutritionLogByDate(It.IsAny<string>())).ThrowsAsync(new Exception());
+            _mockNutritionDbService.Setup(x => x.GetNutritionLogByDate(It.IsAny<string>())).ThrowsAsync(new Exception());
 
             // Act
             var response = await _func.Run(_mockHttpRequest.Object, _mockLogger.Object, "2019-12-31");

@@ -41,6 +41,12 @@ namespace MyHealth.API.Nutrition.Functions
             {
                 var nutritionEnvelopeLogs = await _nutritionDbService.GetAllNutritionLogs();
 
+                if (nutritionEnvelopeLogs == null)
+                {
+                    result = new NotFoundResult();
+                    return result;
+                }
+
                 foreach (var item in nutritionEnvelopeLogs)
                 {
                     nutritionLogs.Add(item.Nutrition);
