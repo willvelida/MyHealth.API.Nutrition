@@ -9,7 +9,6 @@ using MyHealth.API.Nutrition.Validators;
 using MyHealth.Common;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,7 +35,7 @@ namespace MyHealth.API.Nutrition.UnitTests.FunctionTests
             _mockServiceBusHelpers = new Mock<IServiceBusHelpers>();
             _mockConfiguration = new Mock<IConfiguration>();
             _mockHttpRequest = new Mock<HttpRequest>();
-            _mockLogger = new Mock<ILogger>();            
+            _mockLogger = new Mock<ILogger>();
 
             _func = new GetNutritionLogByDate(
                 _mockNutritionDbService.Object,
@@ -70,7 +69,7 @@ namespace MyHealth.API.Nutrition.UnitTests.FunctionTests
         }
 
         [Fact]
-        public async Task ThrowNotFoundResultWhenActivityResponseIsNull()
+        public async Task ThrowNotFoundResultWhenNutritionResponseIsNull()
         {
             // Arrange
             var nutritionEnvelope = new mdl.NutritionEnvelope();
@@ -92,7 +91,7 @@ namespace MyHealth.API.Nutrition.UnitTests.FunctionTests
         }
 
         [Fact]
-        public async Task ReturnOkObjectResultWhenActivityIsFound()
+        public async Task ReturnOkObjectResultWhenNutritionIsFound()
         {
             // Arrange
             var nutritionEnvelope = new mdl.NutritionEnvelope
@@ -122,7 +121,7 @@ namespace MyHealth.API.Nutrition.UnitTests.FunctionTests
 
 
         [Fact]
-        public async Task Throw500InternalServerErrorStatusCodeWhenActivityDbServiceThrowsException()
+        public async Task Throw500InternalServerErrorStatusCodeWhenNutritionDbServiceThrowsException()
         {
             // Arrange
             var activityEnvelope = new mdl.ActivityEnvelope();

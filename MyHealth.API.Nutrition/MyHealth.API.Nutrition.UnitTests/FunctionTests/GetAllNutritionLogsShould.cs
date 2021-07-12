@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoFixture;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -46,15 +47,8 @@ namespace MyHealth.API.Nutrition.UnitTests.FunctionTests
         {
             // Arrange
             var nutritions = new List<mdl.NutritionEnvelope>();
-            var nutritionEnvelope = new mdl.NutritionEnvelope
-            {
-                Id = Guid.NewGuid().ToString(),
-                Nutrition = new mdl.Nutrition
-                {
-                    NutritionDate = "2021-05-06"
-                },
-                DocumentType = "Test"
-            };
+            var fixture = new Fixture();
+            var nutritionEnvelope = fixture.Create<mdl.NutritionEnvelope>();
             nutritions.Add(nutritionEnvelope);
             byte[] byteArray = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(nutritions));
             MemoryStream memoryStream = new MemoryStream(byteArray);

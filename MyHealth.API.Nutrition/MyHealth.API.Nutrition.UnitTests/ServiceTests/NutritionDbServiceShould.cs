@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using AutoFixture;
+using FluentAssertions;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 using Moq;
@@ -6,7 +7,6 @@ using MyHealth.API.Nutrition.Services;
 using MyHealth.API.Nutrition.UnitTests.TestHelpers;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using mdl = MyHealth.Common.Models;
@@ -40,15 +40,8 @@ namespace MyHealth.API.Nutrition.UnitTests.ServiceTests
         {
             // Arrange
             List<mdl.NutritionEnvelope> nutritionEnvelopes = new List<mdl.NutritionEnvelope>();
-            mdl.NutritionEnvelope nutritionEnvelope = new mdl.NutritionEnvelope
-            {
-                Id = Guid.NewGuid().ToString(),
-                DocumentType = "Test",
-                Nutrition = new mdl.Nutrition
-                {
-                    NutritionDate = "2021-05-07"
-                }
-            };
+            var fixture = new Fixture();
+            mdl.NutritionEnvelope nutritionEnvelope = fixture.Create<mdl.NutritionEnvelope>();
             nutritionEnvelopes.Add(nutritionEnvelope);
 
             _mockContainer.SetupItemQueryIteratorMock(nutritionEnvelopes);
@@ -62,7 +55,7 @@ namespace MyHealth.API.Nutrition.UnitTests.ServiceTests
         }
 
         [Fact]
-        public async Task GetAllActivies_NoResultsReturned()
+        public async Task GetNutritionLogs_NoResultsReturned()
         {
             // Arrange
             List<mdl.NutritionEnvelope> nutritionEnvelopes = new List<mdl.NutritionEnvelope>();
@@ -79,7 +72,7 @@ namespace MyHealth.API.Nutrition.UnitTests.ServiceTests
         }
 
         [Fact]
-        public async Task CatchExceptionWhenCosmosThrowsExceptionWhenGetActivitiesIsCalled()
+        public async Task CatchExceptionWhenCosmosThrowsExceptionWhenGetAllNutritionLogsIsCalled()
         {
             // Arrange
             _mockContainer.Setup(x => x.GetItemQueryIterator<mdl.NutritionEnvelope>(
@@ -96,7 +89,7 @@ namespace MyHealth.API.Nutrition.UnitTests.ServiceTests
         }
 
         [Fact]
-        public async Task GetActivityByDate()
+        public async Task GetNutritionLogByDate()
         {
             // Arrange
             List<mdl.NutritionEnvelope> nutritionEnvelopes = new List<mdl.NutritionEnvelope>();
@@ -124,7 +117,7 @@ namespace MyHealth.API.Nutrition.UnitTests.ServiceTests
         }
 
         [Fact]
-        public async Task GetActivityByDate_NoResultsReturned()
+        public async Task GetNutritionLogByDate_NoResultsReturned()
         {
             // Arrange
             var emptyActivitiesList = new List<mdl.NutritionEnvelope>();
@@ -141,7 +134,7 @@ namespace MyHealth.API.Nutrition.UnitTests.ServiceTests
         }
 
         [Fact]
-        public async Task CatchExceptionWhenCosmosThrowsExceptionWhenGetActivityByDateIsCalled()
+        public async Task CatchExceptionWhenCosmosThrowsExceptionWhenGetNutritionLogByDateIsCalled()
         {
             // Arrange
             _mockContainer.Setup(x => x.GetItemQueryIterator<mdl.NutritionEnvelope>(
